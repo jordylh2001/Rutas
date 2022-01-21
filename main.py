@@ -1,98 +1,24 @@
 import sys
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMenu
-from PyQt5.QtGui import QKeySequence, QIcon, QPen, QColor, QLinearGradient
-from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtGui import QCursor
 
-
-def create_action(parent, text, slot=None,
-                  shortcut=None, shortcuts=None, shortcut_context=None,
-                  icon=None, tooltip=None,
-                  checkable=False, checked=False):
-    action = QtWidgets.QAction(text, parent)
-
-    if icon is not None:
-        action.setIcon(QIcon(':/%s.png' % icon))
-    if shortcut is not None:
-        action.setShortcut(shortcut)
-    if shortcuts is not None:
-        action.setShortcuts(shortcuts)
-    if shortcut_context is not None:
-        action.setShortcutContext(shortcut_context)
-    if tooltip is not None:
-        action.setToolTip(tooltip)
-        action.setStatusTip(tooltip)
-    if checkable:
-        action.setCheckable(True)
-    if checked:
-        action.setChecked(True)
-    if slot is not None:
-        action.triggered.connect(slot)
-
-    return action
-
-
+#Settings for the Window and the content
 class Settings():
-
     WIDTH = 20
     HEIGHT = 15
-    NUM_BLOCKS_X = 10
-    NUM_BLOCKS_Y = 14
+    NUM_BLOCKS_X = 40
+    NUM_BLOCKS_Y = 20
 
 
 class QS(QtWidgets.QGraphicsScene):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self.lines = []
-
-        self.draw_grid()
-        self.set_opacity(0.3)
-        # self.set_visible(False)
-        # self.delete_grid()
-
-    def draw_grid(self):
         width = Settings.NUM_BLOCKS_X * Settings.WIDTH
         height = Settings.NUM_BLOCKS_Y * Settings.HEIGHT
         self.setSceneRect(0, 0, width, height)
         self.setItemIndexMethod(QtWidgets.QGraphicsScene.NoIndex)
-
-        pen = QPen(QColor(255, 0, 100), 1, Qt.SolidLine)
-
-        for x in range(0, Settings.NUM_BLOCKS_X + 1):
-            xc = x * Settings.WIDTH
-            self.lines.append(self.addLine(xc, 0, xc, height, pen))
-
-        for y in range(0, Settings.NUM_BLOCKS_Y + 1):
-            yc = y * Settings.HEIGHT
-            self.lines.append(self.addLine(0, yc, width, yc, pen))
-
-    def set_visible(self, visible=True):
-        for line in self.lines:
-            line.setVisible(visible)
-
-    def delete_grid(self):
-        for line in self.lines:
-            self.removeItem(line)
-        del self.lines[:]
-
-    def set_opacity(self, opacity):
-        for line in self.lines:
-            line.setOpacity(opacity)
-
-    def draw_insert_at_marker(self):
-        w = Settings.WIDTH * 3
-        h = Settings.HEIGHT
-
-        r = QRectF(7 * Settings.WIDTH, 7 * Settings.HEIGHT, w, h)
-        gradient = QLinearGradient(r.topLeft(), r.bottomRight())
-        gradient.setColorAt(1, QColor(255, 255, 255, 0))
-        gradient.setColorAt(0, QColor(255, 255, 255, 127))
-        rect = self.addRect(r, Qt.white, gradient)
 
 
 class QV(QtWidgets.QGraphicsView):
@@ -100,33 +26,23 @@ class QV(QtWidgets.QGraphicsView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        #Menu
+        bar = self.menuBar()
+        # File menu
+        file_menu = bar.addMenu('File')
+        # adding actions to file menu
+        paint_action = QtWidgets.QAction('Paint', self)
+        delete_action = QtWidgets.QAction('Delete', self)
+        file_menu.addAction(paint_action)
+        file_menu.addAction(delete_action)
         self.view_menu = QMenu(self)
-        self.create_actions()
+        # close_action.triggered.connect(self.close)
 
-    def create_actions(self):
-        act = create_action(self.view_menu, "Zoom in",
-                            slot=self.on_zoom_in,
-                            shortcut=QKeySequence("+"), shortcut_context=Qt.WidgetShortcut)
-        self.view_menu.addAction(act)
+        # use `connect` method to bind signals to desired behavior
+        self.view_menu = QMenu(self)
 
-        act = create_action(self.view_menu, "Zoom out",
-                            slot=self.on_zoom_out,
-                            shortcut=QKeySequence("-"), shortcut_context=Qt.WidgetShortcut)
-        self.view_menu.addAction(act)
-        self.addActions(self.view_menu.actions())
 
-    def on_zoom_in(self):
-        if not self.scene():
-            return
-
-        self.scale(1.5, 1.5)
-
-    def on_zoom_out(self):
-        if not self.scene():
-            return
-
-        self.scale(1.0 / 1.5, 1.0 / 1.5)
-
+    #draw all the background
     def drawBackground(self, painter, rect):
         gr = rect.toRect()
         start_x = gr.left() + Settings.WIDTH - (gr.left() % Settings.WIDTH)
@@ -151,7 +67,6 @@ if __name__ == '__main__':
     a = QS()
     b = QV()
     b.setScene(a)
-    b.setWindowTitle("Rutas")
-    # b.resize(800,600)
     b.show()
+    b.setWindowTitle('Rutas')
     sys.exit(app.exec_())
