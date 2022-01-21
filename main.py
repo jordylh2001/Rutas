@@ -67,9 +67,10 @@ class Main(QtWidgets.QMainWindow):
         file_menu.addAction(delete_action)
 
         self.view = QV(self)
-        self.view.setGeometry(0,0,710,650)
-        self.scene = QS()
+        self.view.setGeometry(10,30,800,800)
+        self.scene = QS(self)
         self.view.setScene(self.scene)
+        self.view.show()
 
         #self.view_menu = QtWidgets.QMenu(self)
         # close_action.triggered.connect(self.close)
