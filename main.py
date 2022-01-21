@@ -1,7 +1,7 @@
 import sys
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QMenu
+
 
 #Settings for the Window and the content
 class Settings():
@@ -9,7 +9,6 @@ class Settings():
     HEIGHT = 15
     NUM_BLOCKS_X = 40
     NUM_BLOCKS_Y = 20
-
 
 class QS(QtWidgets.QGraphicsScene):
 
@@ -25,22 +24,6 @@ class QV(QtWidgets.QGraphicsView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        #Menu
-        bar = self.menuBar()
-        # File menu
-        file_menu = bar.addMenu('File')
-        # adding actions to file menu
-        paint_action = QtWidgets.QAction('Paint', self)
-        delete_action = QtWidgets.QAction('Delete', self)
-        file_menu.addAction(paint_action)
-        file_menu.addAction(delete_action)
-        self.view_menu = QMenu(self)
-        # close_action.triggered.connect(self.close)
-
-        # use `connect` method to bind signals to desired behavior
-        self.view_menu = QMenu(self)
-
 
     #draw all the background
     def drawBackground(self, painter, rect):
@@ -61,12 +44,44 @@ class QV(QtWidgets.QGraphicsView):
 
         super().drawBackground(painter, rect)
 
+class Main(QtWidgets.QMainWindow):
 
-if __name__ == '__main__':
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        # adding actions to file menu
+        #self.setWindowIcon(QIcon('upv.png'))
+        self.setWindowTitle("Rutas")
+        self.setGeometry(100, 100, 1250, 700)
+
+        paint_action = QtWidgets.QAction('Paint', self)
+        delete_action = QtWidgets.QAction('Delete', self)
+        #Menu
+        self.statusBar()
+        bar = self.menuBar()
+        # File menu
+        file_menu = bar.addMenu('File')
+        file_menu.addAction(paint_action)
+        file_menu.addAction(delete_action)
+
+        self.view = QV(self)
+        self.view.setGeometry(0,0,710,650)
+        self.scene = QS()
+        self.view.setScene(self.scene)
+
+        #self.view_menu = QtWidgets.QMenu(self)
+        # close_action.triggered.connect(self.close)
+
+        # use `connect` method to bind signals to desired behavior
+        #self.view_menu = QMenu(self)
+        self.show()
+
+def main() -> None:
     app = QtWidgets.QApplication(sys.argv)
-    a = QS()
-    b = QV()
-    b.setScene(a)
-    b.show()
-    b.setWindowTitle('Rutas')
+    b = Main()
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
