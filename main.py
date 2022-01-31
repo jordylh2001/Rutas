@@ -3,7 +3,7 @@ from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 
 # Settings for the Window and the content
-from PyQt5.QtWidgets import QMenu, QAction
+from PyQt5.QtWidgets import QMenu, QAction, QPushButton, QLabel
 
 
 class Settings:
@@ -55,38 +55,42 @@ class Main(QtWidgets.QMainWindow):
         self.view = None
         self.initUI()
 
+    def mousePressEvent(self, QMouseEvent):
+        print("Press", QMouseEvent.pos())
+
     def initUI(self):
         # adding actions to file menu
         # self.setWindowIcon(QIcon('upv.png'))
         self.setWindowTitle("Rutas")
-        self.setGeometry(100, 100, 1250, 700)
+        self.setGeometry(100, 100, 1250, 850)
 
-        # Menu
-        self.statusBar()
-        bar = self.menuBar()
-        fileMenu = bar.addMenu('Actions')
+        # pintar
+        label1 = QLabel(self)
+        label1.setText("Paint")
+        label1.setGeometry(880,100,100,30)
+        button1 = QPushButton("Green", self)
+        button1.setGeometry(850, 150, 100, 30)
+        button1.clicked.connect(self.paintGreen)
+        button2 = QPushButton("Red", self)
+        button2.setGeometry(850, 250, 100, 30)
+        button2.clicked.connect(self.paintRed)
+        button3 = QPushButton("Wall", self)
+        button3.setGeometry(850, 350, 100, 30)
+        button3.clicked.connect(self.paintWall)
 
-        #Paint
-        paint_menu = QMenu('Paint', self)
-        paint_action1 = QAction('Green', self)
-        paint_action2 = QAction('Red', self)
-        paint_action3 = QAction('Wall', self)
-        paint_menu.addAction(paint_action1)
-        paint_menu.addAction(paint_action2)
-        paint_menu.addAction(paint_action3)
-
-        #Delete
-        delete_menu = QMenu('Delete', self)
-        delete_action1 = QAction('Green', self)
-        delete_action2 = QAction('Red', self)
-        delete_action3 = QAction('Wall', self)
-        delete_menu.addAction(delete_action1)
-        delete_menu.addAction(delete_action2)
-        delete_menu.addAction(delete_action3)
-
-        fileMenu.addMenu(paint_menu)
-        fileMenu.addMenu(delete_menu)
-
+        # borrar
+        label2 = QLabel(self)
+        label2.setText("Delete")
+        label2.setGeometry(1030,100,100,30)
+        button4 = QPushButton("Green", self)
+        button4.setGeometry(1000, 150, 100, 30)
+        button4.clicked.connect(self.deleteGreen)
+        button5 = QPushButton("Red", self)
+        button5.setGeometry(1000, 250, 100, 30)
+        button5.clicked.connect(self.deleteRed)
+        button6 = QPushButton("Wall", self)
+        button6.setGeometry(1000, 350, 100, 30)
+        button6.clicked.connect(self.deleteWall)
         self.view = QV(self)
         self.view.setGeometry(10, 30, 800, 800)
         self.scene = QS(self)
@@ -99,6 +103,25 @@ class Main(QtWidgets.QMainWindow):
         # use `connect` method to bind signals to desired behavior
         self.view_menu = QMenu(self)
         self.show()
+
+    def paintGreen(self):
+        print("pressed")
+
+    def paintRed(self):
+        print("pressed")
+
+    def paintWall(self):
+        print("pressed")
+
+    # Delete
+    def deleteGreen(self):
+        print("pressed")
+
+    def deleteRed(self):
+        print("pressed")
+
+    def deleteWall(self):
+        print("pressed")
 
 
 def main() -> None:
