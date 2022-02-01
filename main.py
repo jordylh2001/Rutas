@@ -1,9 +1,12 @@
 import sys
+
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
-
+import numpy as np
 # Settings for the Window and the content
-from PyQt5.QtWidgets import QMenu, QAction, QPushButton, QLabel
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPainter, QPen
+from PyQt5.QtWidgets import QMenu, QPushButton, QLabel
 
 
 class Settings:
@@ -49,6 +52,11 @@ class QV(QtWidgets.QGraphicsView):
 
 
 class Main(QtWidgets.QMainWindow):
+    opc = 0
+    obj = 0
+    green = [0, 0]
+    red = [0, 0]
+    wall = np.array([[]])
 
     def __init__(self):
         super().__init__()
@@ -56,6 +64,26 @@ class Main(QtWidgets.QMainWindow):
         self.initUI()
 
     def mousePressEvent(self, QMouseEvent):
+        global opc, obj
+        pos = QMouseEvent.pos()
+        color = ""
+        
+        if opc == 1:
+            if obj == 1:
+                color = "green"
+            if obj == 2:
+                color = "Red"
+            if obj == 3:
+                color = "Wall"
+
+        if opc == 2:
+            if obj == 1:
+                color = "Green"
+            if obj == 2:
+                color = "Red"
+            if obj == 3:
+                color = "Wall"
+            # print(color)
         print("Press", QMouseEvent.pos())
 
     def initUI(self):
@@ -67,7 +95,7 @@ class Main(QtWidgets.QMainWindow):
         # pintar
         label1 = QLabel(self)
         label1.setText("Paint")
-        label1.setGeometry(880,100,100,30)
+        label1.setGeometry(880, 100, 100, 30)
         button1 = QPushButton("Green", self)
         button1.setGeometry(850, 150, 100, 30)
         button1.clicked.connect(self.paintGreen)
@@ -81,7 +109,7 @@ class Main(QtWidgets.QMainWindow):
         # borrar
         label2 = QLabel(self)
         label2.setText("Delete")
-        label2.setGeometry(1030,100,100,30)
+        label2.setGeometry(1030, 100, 100, 30)
         button4 = QPushButton("Green", self)
         button4.setGeometry(1000, 150, 100, 30)
         button4.clicked.connect(self.deleteGreen)
@@ -91,6 +119,12 @@ class Main(QtWidgets.QMainWindow):
         button6 = QPushButton("Wall", self)
         button6.setGeometry(1000, 350, 100, 30)
         button6.clicked.connect(self.deleteWall)
+
+        # Boton de busqueda
+        button7 = QPushButton("Buscar", self)
+        button7.setGeometry(930, 450, 100, 30)
+        button7.clicked.connect(self.search)
+
         self.view = QV(self)
         self.view.setGeometry(10, 30, 800, 800)
         self.scene = QS(self)
@@ -104,24 +138,49 @@ class Main(QtWidgets.QMainWindow):
         self.view_menu = QMenu(self)
         self.show()
 
+
     def paintGreen(self):
-        print("pressed")
+        global opc, obj
+        opc = 1
+        obj = 1
+        painter = QPainter(self)
+        painter.setPen(QPen(Qt.black, 10, Qt.SolidLine))
+        painter.drawRect(1200, 15, 1000, 200)
+        # print("pressed")
 
     def paintRed(self):
-        print("pressed")
+        global opc, obj
+        opc = 1
+        obj = 2
+        # print("pressed")
 
     def paintWall(self):
-        print("pressed")
+        global opc, obj
+        opc = 1
+        obj = 3
+        # print("pressed")
 
     # Delete
     def deleteGreen(self):
-        print("pressed")
+        global opc, obj
+        opc = 2
+        obj = 1
+        # print("pressed")
 
     def deleteRed(self):
-        print("pressed")
+        global opc, obj
+        opc = 2
+        obj = 2
+        # print("pressed")
 
     def deleteWall(self):
-        print("pressed")
+        global opc, obj
+        opc = 2
+        obj = 3
+        # print("pressed")
+
+    def search(self):
+        print("start to search")
 
 
 def main() -> None:
